@@ -1,6 +1,6 @@
 package com.dongdong.kotlinboard.controller
 
-import com.dongdong.kotlinboard.dto.*
+import com.dongdong.kotlinboard.controller.dto.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*

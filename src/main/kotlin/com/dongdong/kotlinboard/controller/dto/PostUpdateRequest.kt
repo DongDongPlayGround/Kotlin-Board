@@ -1,4 +1,4 @@
-package com.dongdong.kotlinboard.dto
+package com.dongdong.kotlinboard.controller.dto
 
 data class PostUpdateRequest(
   val title: String,
