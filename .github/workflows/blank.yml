@@ -1,0 +1,51 @@
+name: kotlin board
+
+env:
+  AWS_REGION: ap-northeast-2
+# main 에 푸쉬 시 워크플로우가 시작됨
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    # 이 소스코드를 체크아웃한다 라는 라이브러리
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+    # gradle 을 통해 jar 파일 빌드
+    - name: Build with Gradle
+      run: ./gradlew clean build -x test
+
+    - name: Get current time
+      uses: 1466587594/get-current-time@v2
+      id: current-time
+      with:
+        format: YYYY-MM-DDTHH-mm-ss
+        utcOffset: "+09:00"
+    # 앞서 만든 jar 파일을 zip 파일로 패키징 
+    - name: Generate deployment package
+      run: |
+        mkdir -p deploy
+        cp build/libs/*.jar deploy/application.jar
+        cd deploy && zip -r deploy.zip .
+
+    - name: Beanstalk Deploy
+      uses: einaregilsson/beanstalk-deploy@v21
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ env.AWS_REGION }}
+        application_name: Kotlin-Board
+        environment_name: Kotlin-Board-Env
+        version_label: github-action-${{steps.current-time.outputs.formattedTime}}
+        deployment_package: deploy/deploy.zip
