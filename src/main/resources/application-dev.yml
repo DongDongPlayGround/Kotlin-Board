@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: Kotlin-Board
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${AWS_RDS_USER}
+    password: ${AWS_RDS_PASSWORD}
+    url: jdbc:mysql://${AWS_RDS_ENDPOINT}:${AWS_RDS_PORT}/${AWS_RDS_DB}?useSSL=false&serverTimezone=Asia/Seoul
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
