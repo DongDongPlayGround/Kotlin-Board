@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
   id("org.springframework.boot") version "3.3.4"
   id("io.spring.dependency-management") version "1.1.6"
-  id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
   kotlin("jvm") version "1.9.25"
   kotlin("plugin.spring") version "1.9.25"
   kotlin("plugin.jpa") version "1.9.25"
@@ -65,4 +64,9 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
   useJUnitPlatform()
+}
+
+// build 시 jar 파일 하나만 생성되도록 조치
+tasks.named<Jar>("jar") {
+  enabled = false
 }
