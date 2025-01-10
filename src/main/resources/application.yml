@@ -1,11 +1,16 @@
 spring:
   application:
     name: Kotlin-Board
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: user
+#    password: pwd
+#    url: jdbc:mysql://localhost:3306/kotlin_board?useSSL=false&serverTimezone=Asia/Seoul
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: user
-    password: pwd
-    url: jdbc:mysql://localhost:3306/kotlin_board?useSSL=false&serverTimezone=Asia/Seoul
+    username: dongdong
+    password: Qortmd0102!!
+    url: jdbc:mysql://awseb-e-sjmg8jk8ug-stack-awsebrdsdatabase-g7zgpggmy1l1.c5aokosgw89k.ap-northeast-2.rds.amazonaws.com/kotlin_board?useSSL=false&serverTimezone=Asia/Seoul
   jpa:
     hibernate:
       ddl-auto: update
