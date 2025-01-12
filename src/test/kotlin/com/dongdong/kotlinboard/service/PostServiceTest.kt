@@ -1,5 +1,7 @@
 package com.dongdong.kotlinboard.service
 
+import com.dongdong.kotlinboard.controller.dto.PostSearchRequest
+import com.dongdong.kotlinboard.domain.Post
 import com.dongdong.kotlinboard.repository.PostRepository
 import com.dongdong.kotlinboard.service.dto.PostCreateRequestDTO
 import com.dongdong.kotlinboard.service.dto.PostUpdateRequestDTO
@@ -7,7 +9,9 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 
 /**
@@ -27,7 +31,7 @@ class PostServiceTest(
           content = "kotlin board project first post!!",
           createdBy = "DongDong"
         )
-      );
+      )
       then("게시글이 정상 생성됨을 확인한다.") {
         postId shouldNotBe null
         println("postId : $postId")
@@ -123,6 +127,60 @@ class PostServiceTest(
           )
         }
         exception.message shouldBe "작성자와 동일한 계정이 아닙니다."
+      }
+    }
+  }
+  given("게시글 상세 조회 시") {
+    val savedId = postService.createPost(
+      PostCreateRequestDTO(
+        title = "게시글 테스트",
+        content = "kotlin board project first post!!",
+        createdBy = "DongDong"
+      )
+    )
+    When("정상 조회 시") {
+      val post = postService.getById(savedId)
+      then("게시글의 내용이 정상적으로 조호됨을 확인한다.") {
+        post shouldNotBe null
+        post.title shouldBe "게시글 테스트"
+      }
+    }
+    When("게시글이 존재하지 않을 시") {
+      then("게시글이 없다는 예외가 발생한다") {
+        val exception = shouldThrow<PostException> {
+          postService.getById(12345L)
+        }
+        exception.message shouldBe "존재하지 않는 게시물 입니다."
+      }
+    }
+  }
+
+  given("게시물 페이지 조회 시") {
+    val pageSaveList = listOf(
+      Post(title = "타이틀1", content = "내용입니다1", createdBy = "동동이"),
+      Post(title = "타이틀2", content = "내용입니다2", createdBy = "동동이"),
+      Post(title = "타이틀3", content = "내용입니다3", createdBy = "동동이"),
+      Post(title = "타이틀4", content = "내용입니다4", createdBy = "동동이"),
+      Post(title = "타이틀5", content = "내용입니다5", createdBy = "동동이"),
+      Post(title = "타이틀6", content = "내용입니다6", createdBy = "동동이"),
+      Post(title = "타이틀7", content = "내용입니다7", createdBy = "동동이")
+    )
+    postRepository.saveAll(pageSaveList)
+    When("2사이즈로 타이틀이란 제목 타겟 삼아 2번째 페이지를 조회 시 ") {
+      val getPageInfos = postService.getAllPagesBySearchFilter(
+        postSearchRequest = PostSearchRequest("타이틀", null),
+        pageRequest = PageRequest.of(1, 2)
+      )
+      then("타이틀5, 타이틀4 가 조회된다.") {
+        // 2번째 페이지
+        getPageInfos.number shouldBe 1
+        // 2 사이즈
+        getPageInfos.size shouldBe 2
+        println(getPageInfos.number)
+        getPageInfos.content.map {
+          println("제목 : ${it.title}")
+          it.title shouldContain "타이틀"
+        }
       }
     }
   }
