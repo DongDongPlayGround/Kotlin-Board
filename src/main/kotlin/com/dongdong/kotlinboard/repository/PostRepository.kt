@@ -35,5 +35,4 @@ class CustomRepositoryImpl : CustomRepository, QuerydslRepositorySupport(Post::c
       .fetchResults()
     return PageImpl(postList.results, pageRequest, postList.total)
   }
-
 }
