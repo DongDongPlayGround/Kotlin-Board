@@ -1,0 +1,20 @@
+### 댓글 생성
+POST localhost:8080/posts/1/comments
+Content-Type: application/json
+
+{
+  "createdBy" : "cerradura",
+  "content" : "댓글입니다ㅏ 테스트"
+}
+
+### 댓글 수정
+PUT localhost:8080/comments/1
+Content-Type: application/json
+
+{
+  "updatedBy" : "cerradura",
+  "content" : "수정수정~"
+}
+
+### 댓글 삭제
+DELETE localhost:8080/comments/1?deletedBy=cerradura
